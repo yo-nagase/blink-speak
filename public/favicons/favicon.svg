@@ -1,0 +1,25 @@
+<svg aria-hidden="true" focusable="false" data-prefix="fad" data-icon="bread-loaf" class="svg-inline--fa fa-bread-loaf" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+<style>
+    path.fa-primary {
+        fill: #E3A857;
+    }
+    path.fa-secondary {
+        fill: #FDFD96;
+    }
+    @media (prefers-color-scheme: dark) {
+        /* 側面 */
+        path.fa-primary {
+            fill: #FFBA01;
+        }
+        /* 表面 */
+        path.fa-secondary {
+            fill: #FFFFFF;
+        }
+    }
+</style>
+<g class="fa-duotone-group">
+<path class="fa-primary" fill="currentColor" d="M640 192c0 35.38-30.88 64-64 64v192c0 17.62-14.38 32-32 32h-160c17.62 0 32-14.38 32-32V256c33.13 0 64-28.62 64-64c0-88.38-107.5-160-240-160h160C532.5 32 640 103.6 640 192z"></path>
+<path class="fa-secondary" fill="currentColor" d="M480 192c0-88.38-107.5-160-240-160S0 103.6 0 192c0 35.38 30.88 64 64 64v192c0 17.62 14.38 32 32 32h288c17.62 0 32-14.38 32-32V256C449.1 256 480 227.4 480 192z"></path>
+</g>
+</svg>
+
