@@ -84,68 +84,74 @@ export default function IndexPage() {
 
       <ResponsiveAppBar />
       <Paper sx={{ padding: "20px" }}>
-        <Container maxWidth="md">
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={12}>
-              <Chip color="default" size="small" label="level1" />{" "}
-              <Chip color="default" size="small" label="missed > 10" />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              {questionList[questionNum].contents}
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <TextField
-                fullWidth
-                sx={{ maxWidth: "md" }}
-                id="outlined-basic"
-                size="small"
-                onChange={(e) => setAnswer(e.target.value)}
-                //label="Outlined"
-                variant="outlined"
-                value={answer}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault(); // Enterキーでの自動送信を防ぐ
-                    handleClick(); // Enterキーが押されたときに呼び出す関数
-                  }
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12}>
-              <Button
-                variant="outlined"
-                color="info"
-                onClick={handleClick}
-                startIcon={<BlockIcon />}
-              >
-                声（未実装）
-              </Button>
+        <Grid>
+          <Grid item xs={12} sm={6}>
+            <Container maxWidth="md">
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={12}>
+                  <Chip color="default" size="small" label="level1" />{" "}
+                  <Chip color="default" size="small" label="missed > 10" />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  {questionList[questionNum].contents}
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    fullWidth
+                    sx={{ maxWidth: "md" }}
+                    id="outlined-basic"
+                    size="small"
+                    onChange={(e) => setAnswer(e.target.value)}
+                    //label="Outlined"
+                    variant="outlined"
+                    value={answer}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault(); // Enterキーでの自動送信を防ぐ
+                        handleClick(); // Enterキーが押されたときに呼び出す関数
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <Button variant="contained" onClick={handleClick} startIcon>
+                    回答する
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="info"
+                    onClick={handleClick}
+                    startIcon={<BlockIcon />}
+                  >
+                    声（未実装）
+                  </Button>
+                </Grid>
+              </Grid>
 
-              <Button variant="contained" onClick={handleClick} startIcon>
-                回答する
-              </Button>
-            </Grid>
+              <Box sx={{ padding: "4px" }}>
+                {/* <pre>{JSON.stringify(result, null, " ")}</pre> */}
+                {[...result].reverse().map((item, index) => {
+                  return (
+                    <>
+                      <pre>{JSON.stringify(item, null, " ")}</pre>
+                    </>
+                  );
+                })}
+
+                <hr />
+                <br />
+                <Link href="/about">About</Link>
+                <br />
+                <Link href="/day">Day</Link>
+                <hr />
+                <Link href="redux-sample">redux-sample</Link>
+              </Box>
+            </Container>
           </Grid>
-
-          <Box sx={{ padding: "4px" }}>
-            {/* <pre>{JSON.stringify(result, null, " ")}</pre> */}
-            {[...result].reverse().map((item, index) => {
-              return (
-                <>
-                  <pre>{JSON.stringify(item, null, " ")}</pre>
-                </>
-              );
-            })}
-
-            <hr />
-            <br />
-            <Link href="/about">About</Link>
-            <br />
-            <Link href="/day">Day</Link>
-            <hr />
-            <Link href="redux-sample">redux-sample</Link>
-          </Box>
-        </Container>
+          <Grid item xs={2} sm={1}>
+            hhhhhh
+          </Grid>
+        </Grid>
       </Paper>
     </>
   );

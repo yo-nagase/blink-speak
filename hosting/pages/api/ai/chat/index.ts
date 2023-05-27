@@ -69,7 +69,7 @@ export default async function handler(req, res) {
  "grammer_score" : number // if user's answer is correct grammaticaly, this score would be 100
  "natural_expression" : string  //if user's expression is natural perfectly, this score would be 100
 "comment_eng" : string, // give advice to user to improve the answer in English
-"comment_jpn" : string, // 日本語で改善コメントを書いてください。問題文を引用する時は問題と同じ英語面を用いてください。
+"comment_jpn" : string, // 日本語で改善コメントを書いてください。問題文を引用する時は問題と同じ英語を用いてください。
 "question": string, // question to user
 "user_answer" : string, // this is user's answer
 "proposal_answer" :  string, // give proposal answer if the score is under 90
