@@ -7,6 +7,10 @@ import { getAnalytics, isSupported } from "firebase/analytics";
 import type { AppProps } from "next/app";
 import { getApps } from "firebase/app";
 import Head from "next/head";
+import { getPerformance } from "firebase/performance";
+import "bulma/css/bulma.css";
+
+import "/store";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -20,11 +24,14 @@ const firebaseConfig = {
 };
 // Check if firebase app is not already initialized
 if (!getApps().length) {
-  initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseConfig);
+  // Initialize Performance Monitoring and get a reference to the service
   if (typeof window !== "undefined") {
+    const perf = getPerformance(app);
     // Enable analytics. https://firebase.google.com/docs/analytics/get-started
     if ("measurementId" in firebaseConfig) getAnalytics();
   }
+
 }
 
 export default function MyApp({ Component, pageProps }: AppProps) {

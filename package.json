@@ -6,11 +6,24 @@
     "start": "next start"
   },
   "dependencies": {
+    "@dqbd/tiktoken": "^1.0.7",
+    "@emotion/react": "^11.11.0",
+    "@emotion/styled": "^11.11.0",
+    "@faker-js/faker": "^8.0.1",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.1",
+    "@reduxjs/toolkit": "^1.9.5",
+    "axios": "^1.4.0",
+    "bulma": "^0.9.4",
+    "faker-js": "^1.0.0",
     "firebase": "^9.21.0",
+    "gpt-3-encoder": "^1.1.4",
     "langchain": "^0.0.75",
     "next": "latest",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.0.5",
+    "tiktoken-node": "^0.0.6"
   },
   "devDependencies": {
     "@types/node": "^17.0.43",
