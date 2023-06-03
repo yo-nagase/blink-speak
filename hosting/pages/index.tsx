@@ -53,7 +53,8 @@ export default function IndexPage() {
     console.log("Click happened");
     try {
       setIsloading(true);
-
+      // ここで配列をついか
+      setResult([...result, { id: "xxxxx", message: "待機中" }]);
       const response = axios
         .get(
           `/api/ai/chat?question=${questionList[questionNum].contents}&answer=${answer}`
@@ -148,9 +149,7 @@ export default function IndexPage() {
               </Box>
             </Container>
           </Grid>
-          <Grid item xs={2} sm={1}>
-            hhhhhh
-          </Grid>
+          <Grid item xs={2} sm={1}></Grid>
         </Grid>
       </Paper>
     </>

@@ -10,7 +10,8 @@ import Head from "next/head";
 import { getPerformance } from "firebase/performance";
 import "bulma/css/bulma.css";
 
-import "/store";
+import {store} from "../store";
+import { Provider } from "react-redux";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -43,7 +44,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <Provider store={store}>
       <Component {...pageProps} />
+
+      </Provider>
     </>
   );
 }
