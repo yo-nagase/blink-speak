@@ -1,5 +1,6 @@
 import { Button, TextField } from "@mui/material";
 import Head from "next/head";
+import DiffVewer from "../../components/DiffViewer";
 require('colors');
 const Diff = require('diff');
 
@@ -24,11 +25,7 @@ export default function DayPage() {
       part.removed ? { color: 'red', textDecoration: 'line-through', backgroundColor: '#ffdada' } : { color: 'grey' }
 
     output.push(<span style={fontStyle}>{part.value}</span>)
-    // span = document.createElement('span');
-    // span.style.color = color;
-    // span.appendChild(document
-    //   .createTextNode(part.value));
-    // fragment.appendChild(span);
+
   });
 
   return (
@@ -37,12 +34,12 @@ export default function DayPage() {
         <title>Day</title>
       </Head>
 
-      {output}
-      <Button> sss</Button>
+      <DiffVewer from={one} to={other} />
+
       <TextField id="outlined-basic" label="Outlined" variant="outlined" />
       <TextField id="filled-basic" label="Filled" variant="filled" />
       <TextField id="standard-basic" label="Standard" variant="standard" />
-      
+
 
     </div>
   );

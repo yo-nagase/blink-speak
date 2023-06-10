@@ -20,6 +20,8 @@ import { useEffect, useState } from "react";
 import { AnswerResult } from "../types/AnswerResult.type";
 import BlockIcon from "@mui/icons-material/Block";
 import Pokemon from "../components/Pokemon";
+import cuid from 'cuid';
+
 
 import ResultBox from "../features/answer-result/ResultBox";
 // Defining the IndexPage component as default export
@@ -55,19 +57,31 @@ export default function IndexPage() {
    */
   const handleClick = async () => {
     console.log("Click happened");
+    const newId = nanoid();
     try {
-      setIsloading(true);
+      //setIsloading(true);
       // ここで配列をついか
-      setResult([...result, { id: "xxxxx", message: "待機中" }]);
+      setResult([...result, { id: newId, message: "待機中", is_loading: true }]);
       const response = axios
         .get(
-          `/api/ai/chat?question=${questionList[questionNum].contents}&answer=${answer}`
+          `/api/ai/chat?id=${newId}&question=${questionList[questionNum].contents}&answer=${answer}`
         )
         .then((response) => {
-          const data = response.data;
-          console.log("🈲", data.message);
-          //console.log("⭐️", JSON.parse(data.message.text));
-          setResult([...result, JSON.parse(data.message.text)]);
+
+          const responseJson: AnswerResult = JSON.parse(response.data.message.text)
+          setResult([...result, { ...responseJson, is_loading: false }]);
+
+
+          //          const data = response.data;
+          // const updatedItems = result.map(item => {
+          //   console.log("⭐️")
+          //   if (item.id === responseJson.id) {
+          //     return responseJson; // IDが一致する場合、名前を更新する
+          //   }
+          //   return item;
+          // });
+          // console.log(updatedItems);
+          // setResult(updatedItems);
         });
       //解答欄を空白にする
       setAnswer("");
@@ -89,96 +103,86 @@ export default function IndexPage() {
 
       <ResponsiveAppBar />
 
-      <Stack direction="row" spacing={2}>
-
-        <Paper sx={{ padding: "20px" }}>
-          <Grid>
-            <Grid item xs={12} sm={6}>
-              <Container maxWidth="md">
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12}>
-                    <Chip color="default" size="small" label="level1" />{" "}
-                    <Chip color="default" size="small" label="missed > 10" />
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    {questionList[questionNum].contents}
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <TextField
-                      fullWidth
-                      sx={{ maxWidth: "md" }}
-                      id="outlined-basic"
-                      size="small"
-                      onChange={(e) => setAnswer(e.target.value)}
-                      //label="Outlined"
-                      variant="outlined"
-                      value={answer}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault(); // Enterキーでの自動送信を防ぐ
-                          handleClick(); // Enterキーが押されたときに呼び出す関数
-                        }
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={12}>
-                    <Button variant="contained" onClick={handleClick} startIcon>
-                      回答する
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="info"
-                      onClick={handleClick}
-                      startIcon={<BlockIcon />}
-                    >
-                      声（未実装）
-                    </Button>
-                  </Grid>
-                </Grid>
-
-                <Box sx={{ padding: "4px" }}>
-                  {/* <pre>{JSON.stringify(result, null, " ")}</pre> */}
-                  {[...result].reverse().map((item, index) => {
-                    return (
-                      <>
-                        <pre>{JSON.stringify(item, null, " ")}</pre>
-                      </>
-                    );
-                  })}
-
-
-                  <ResultBox />
-
-                  <Pokemon />
-
-                  <hr />
-
-                  Diffs
-                  <br />
-
-
-                  <br />
-                  <Link href="/about">About</Link>
-                  <br />
-                  <Link href="/day">Day</Link>
-                  <hr />
-                  <Link href="redux-sample">redux-sample</Link>
-                </Box>
-              </Container>
+      {/* <Stack direction="row" spacing={2}>
+        <Grid container >
+          <Grid item xs={8}> */}
+      <Paper sx={{ padding: "20px" }}>
+        <Grid item xs={12} sm={6}>
+          <Container maxWidth="md">
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={12}>
+                <Chip color="default" size="small" label="level1" />{" "}
+                <Chip color="default" size="small" label="missed > 10" />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                {questionList[questionNum].contents}
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <TextField
+                  fullWidth
+                  sx={{ maxWidth: "md" }}
+                  id="outlined-basic"
+                  size="small"
+                  onChange={(e) => setAnswer(e.target.value)}
+                  //label="Outlined"
+                  variant="outlined"
+                  value={answer}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault(); // Enterキーでの自動送信を防ぐ
+                      handleClick(); // Enterキーが押されたときに呼び出す関数
+                    }
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <Button variant="contained" onClick={handleClick} startIcon>
+                  回答する
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="info"
+                  onClick={handleClick}
+                  startIcon={<BlockIcon />}
+                >
+                  声（未実装）
+                </Button>
+              </Grid>
             </Grid>
 
-          </Grid>
-        </Paper>
+            <Box sx={{ padding: "4px" }}>
+              {/* ここで回答結果を表示する */}
+              {[...result].reverse().map((item, index) => {
+                return (
+                  <>
+                    <Paper sx={{ padding: "15px" }}>
+                      <ResultBox {...item} />
+                    </Paper>
+                    {/* <pre>{JSON.stringify(item, null, " ")}</pre> */}
+                  </>
+                );
+              })}
+              <hr />
+              <Pokemon />
 
-        <Grid container sx={{ display: { xs: 'none', sm: 'block' } }} xs={2}>
-          <Grid item xs={1} lg={1} sx={{}}>
-            ss
-          </Grid>
-          <Grid item xs={11} lg={11}>
-            ddd
+              <Link href="/about">About</Link>
+              <br />
+              <Link href="/day">Day</Link>
+              <hr />
+              <Link href="redux-sample">redux-sample</Link>
+            </Box>
+          </Container>
+        </Grid>
+
+
+      </Paper>
+      {/* </Grid>
+
+          <Grid item sx={{ display: { xs: 'none', sm: 'block' } }} xs={4}>
+            xxxxxx
           </Grid>
         </Grid>
-      </Stack>
+      </Stack> */}
     </>
   );
 }
