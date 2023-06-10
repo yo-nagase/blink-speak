@@ -10,6 +10,7 @@ import {
   Grid,
   Icon,
   Paper,
+  Stack,
   TextField,
 } from "@mui/material";
 import axios from "axios";
@@ -18,6 +19,9 @@ import { nanoid } from "@reduxjs/toolkit";
 import { useEffect, useState } from "react";
 import { AnswerResult } from "../types/AnswerResult.type";
 import BlockIcon from "@mui/icons-material/Block";
+import Pokemon from "../components/Pokemon";
+
+import ResultBox from "../features/answer-result/ResultBox";
 // Defining the IndexPage component as default export
 export default function IndexPage() {
   const router = useRouter();
@@ -84,74 +88,97 @@ export default function IndexPage() {
       </Head>
 
       <ResponsiveAppBar />
-      <Paper sx={{ padding: "20px" }}>
-        <Grid>
-          <Grid item xs={12} sm={6}>
-            <Container maxWidth="md">
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={12}>
-                  <Chip color="default" size="small" label="level1" />{" "}
-                  <Chip color="default" size="small" label="missed > 10" />
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  {questionList[questionNum].contents}
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    fullWidth
-                    sx={{ maxWidth: "md" }}
-                    id="outlined-basic"
-                    size="small"
-                    onChange={(e) => setAnswer(e.target.value)}
-                    //label="Outlined"
-                    variant="outlined"
-                    value={answer}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault(); // Enterキーでの自動送信を防ぐ
-                        handleClick(); // Enterキーが押されたときに呼び出す関数
-                      }
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Button variant="contained" onClick={handleClick} startIcon>
-                    回答する
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="info"
-                    onClick={handleClick}
-                    startIcon={<BlockIcon />}
-                  >
-                    声（未実装）
-                  </Button>
-                </Grid>
-              </Grid>
 
-              <Box sx={{ padding: "4px" }}>
-                {/* <pre>{JSON.stringify(result, null, " ")}</pre> */}
-                {[...result].reverse().map((item, index) => {
-                  return (
-                    <>
-                      <pre>{JSON.stringify(item, null, " ")}</pre>
-                    </>
-                  );
-                })}
+      <Stack direction="row" spacing={2}>
 
-                <hr />
-                <br />
-                <Link href="/about">About</Link>
-                <br />
-                <Link href="/day">Day</Link>
-                <hr />
-                <Link href="redux-sample">redux-sample</Link>
-              </Box>
-            </Container>
+        <Paper sx={{ padding: "20px" }}>
+          <Grid>
+            <Grid item xs={12} sm={6}>
+              <Container maxWidth="md">
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={12}>
+                    <Chip color="default" size="small" label="level1" />{" "}
+                    <Chip color="default" size="small" label="missed > 10" />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    {questionList[questionNum].contents}
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <TextField
+                      fullWidth
+                      sx={{ maxWidth: "md" }}
+                      id="outlined-basic"
+                      size="small"
+                      onChange={(e) => setAnswer(e.target.value)}
+                      //label="Outlined"
+                      variant="outlined"
+                      value={answer}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault(); // Enterキーでの自動送信を防ぐ
+                          handleClick(); // Enterキーが押されたときに呼び出す関数
+                        }
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <Button variant="contained" onClick={handleClick} startIcon>
+                      回答する
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="info"
+                      onClick={handleClick}
+                      startIcon={<BlockIcon />}
+                    >
+                      声（未実装）
+                    </Button>
+                  </Grid>
+                </Grid>
+
+                <Box sx={{ padding: "4px" }}>
+                  {/* <pre>{JSON.stringify(result, null, " ")}</pre> */}
+                  {[...result].reverse().map((item, index) => {
+                    return (
+                      <>
+                        <pre>{JSON.stringify(item, null, " ")}</pre>
+                      </>
+                    );
+                  })}
+
+
+                  <ResultBox />
+
+                  <Pokemon />
+
+                  <hr />
+
+                  Diffs
+                  <br />
+
+
+                  <br />
+                  <Link href="/about">About</Link>
+                  <br />
+                  <Link href="/day">Day</Link>
+                  <hr />
+                  <Link href="redux-sample">redux-sample</Link>
+                </Box>
+              </Container>
+            </Grid>
+
           </Grid>
-          <Grid item xs={2} sm={1}></Grid>
+        </Paper>
+
+        <Grid container sx={{ display: { xs: 'none', sm: 'block' } }} xs={2}>
+          <Grid item xs={1} lg={1} sx={{}}>
+            ss
+          </Grid>
+          <Grid item xs={11} lg={11}>
+            ddd
+          </Grid>
         </Grid>
-      </Paper>
+      </Stack>
     </>
   );
 }
