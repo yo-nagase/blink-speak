@@ -1,5 +1,5 @@
 export type AnswerResult = {
-  id: string;
+  key: string;
   grammer_score?: number;
   question?: string;
   natural_score?: number;

@@ -2,6 +2,7 @@
 
 import {
 
+    Container,
     Grid,
     Paper,
     Stack,
@@ -28,7 +29,9 @@ export default function ResultBox(props: AnswerResult) {
     // Returning the JSX elements to render on the page
     return (
         <>
-            {props.is_loading ? <h1>loading...</h1>
+            {props.is_loading ? <Container sx={{minHeight:"200px"}}>
+                <h1>loading...</h1>
+            </Container>
                 : <Grid container spacing={1}  >
                     <Grid item xs={1} lg={1} sx={{}}>
                         Q1
@@ -38,7 +41,7 @@ export default function ResultBox(props: AnswerResult) {
                             {props.is_correct ? "✅ 正解" : "❌ 不正解"}
                         </h3>
                     </Grid>
-                    <Grid item xs={4} md={2} wrap="nowrap" >
+                    {/* <Grid item xs={4} md={2} wrap="nowrap" >
                         文法スコア
                     </Grid>
                     <Grid item xs={8} md={4} >
@@ -49,7 +52,7 @@ export default function ResultBox(props: AnswerResult) {
                     </Grid>
                     <Grid item xs={8} md={4}>
                         {props.natural_score}/100
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12} sm={2}>
                         問題
                     </Grid>

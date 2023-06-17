@@ -12,6 +12,7 @@ import {
   Paper,
   Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -24,6 +25,7 @@ import cuid from 'cuid';
 
 
 import ResultBox from "../features/answer-result/ResultBox";
+import Demo from "../components/Demo";
 // Defining the IndexPage component as default export
 export default function IndexPage() {
   const router = useRouter();
@@ -61,13 +63,13 @@ export default function IndexPage() {
     try {
       //setIsloading(true);
       // ここで配列をついか
-      setResult([...result, { id: newId, message: "待機中", is_loading: true }]);
+      setResult([...result, { key: newId, message: "待機中", is_loading: true }]);
       const response = axios
         .get(
           `/api/ai/chat?id=${newId}&question=${questionList[questionNum].contents}&answer=${answer}`
         )
         .then((response) => {
-
+          // TODO: ここで配列を更新する。IDを使って検索
           const responseJson: AnswerResult = JSON.parse(response.data.message.text)
           setResult([...result, { ...responseJson, is_loading: false }]);
 
@@ -115,7 +117,9 @@ export default function IndexPage() {
                 <Chip color="default" size="small" label="missed > 10" />
               </Grid>
               <Grid item xs={12} sm={12}>
-                {questionList[questionNum].contents}
+                <Typography sx={{ fontSize: "20px" }}>
+                  {questionList[questionNum].contents}
+                </Typography>
               </Grid>
               <Grid item xs={12} sm={12}>
                 <TextField
@@ -164,9 +168,8 @@ export default function IndexPage() {
               })}
               <hr />
               <Pokemon />
-
-              <Link href="/about">About</Link>
-              <br />
+              <Demo />
+             
               <Link href="/day">Day</Link>
               <hr />
               <Link href="redux-sample">redux-sample</Link>
