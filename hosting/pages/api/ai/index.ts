@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     // call ai api form here
 
     const model = new OpenAI({
-      modelName: "gpt-3.5-turbo",
+      modelName: process.env.MODEL_NAME, //"gpt-3.5-turbo",
       //modelName: "gpt-4",
       openAIApiKey: process.env.OPENAI_API_KEY,
     });

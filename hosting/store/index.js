@@ -1,6 +1,7 @@
 import { configureStore, createSlice, getDefaultMiddleware } from "@reduxjs/toolkit";
 import { pokemonApi } from "../services/pokemon";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import { demoApi } from "../services/demo";
 
 
 const songsSlice = createSlice({
@@ -21,8 +22,9 @@ export const store = configureStore({
   reducer: {
     songs: songsSlice.reducer,
     [pokemonApi.reducerPath]: pokemonApi.reducer,
+    [demoApi.reducerPath]: demoApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(pokemonApi.middleware)
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(pokemonApi.middleware, demoApi.middleware)
 });
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

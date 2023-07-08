@@ -41,16 +41,16 @@ export default async function handler(req, res) {
     });
 
     // ここでリクエストを送る
-    const responseB = await chat.call([
-      new HumanChatMessage(
-        "以下のデータのサンプルを30件つくってくださいデータはExcelに貼り付けられる様にtsvで作成してください。IDは1からの連番でつけてください。必要な項目は以下のとおりです。\n```\nID,商品コード,商品名,メーカ名,商品種別, 価格, 発売日\n```"
-      ),
-      // AIからの返答は以下の様に書く
-      //new AIChatMessage("xxxxxx"),
-    ]);
+    // const responseB = await chat.call([
+    //   new HumanChatMessage(
+    //     "以下のデータのサンプルを30件つくってくださいデータはExcelに貼り付けられる様にtsvで作成してください。IDは1からの連番でつけてください。必要な項目は以下のとおりです。\n```\nID,商品コード,商品名,メーカ名,商品種別, 価格, 発売日\n```"
+    //   ),
+    //   // AIからの返答は以下の様に書く
+    //   //new AIChatMessage("xxxxxx"),
+    // ]);
 
     // TODO: ここでトークンサイズを測って、DBに格納したい。
     // 結果の一覧をコンソールに表示する（デバッグ用）
-    console.log(responseB);
+   //console.log(responseB);
   }
 }

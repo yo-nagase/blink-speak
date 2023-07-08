@@ -1,0 +1,11 @@
+.highlightedPage {
+  /* background-color: yellow; */
+  background: #ffff00;
+  /* background: red; */
+  color:red;
+  border: 2px solid red;
+}
+
+.normalPage {
+  background-color: white;
+}

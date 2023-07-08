@@ -2,6 +2,9 @@
   "dependencies": {
     "colors": "^1.4.0",
     "cuid": "^3.0.0",
-    "diff": "^5.1.0"
+    "diff": "^5.1.0",
+    "formidable": "^3.5.0",
+    "mic-recorder-to-mp3": "^2.2.2",
+    "react-timer-hook": "^3.0.6"
   }
 }

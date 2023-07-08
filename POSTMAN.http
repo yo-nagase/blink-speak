@@ -1,0 +1,23 @@
+@name = Huachao Mao
+@id = 313
+@address = Wuxi\nChina
+
+###
+
+@host=localhost:3010
+
+
+### トークンの取得 (ousinkou01)
+# @name login
+POST http://localhost:3111/api/whisper HTTP/1.1
+Host: {{host}}
+content-type: application/json
+
+
+
+
+
+
+
+
+

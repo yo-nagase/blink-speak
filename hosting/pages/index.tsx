@@ -17,12 +17,13 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 import { nanoid } from "@reduxjs/toolkit";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnswerResult } from "../types/AnswerResult.type";
 import BlockIcon from "@mui/icons-material/Block";
 import Pokemon from "../components/Pokemon";
 import cuid from 'cuid';
 
+const MicRecorder = require('mic-recorder-to-mp3')
 
 import ResultBox from "../features/answer-result/ResultBox";
 import Demo from "../components/Demo";
@@ -33,6 +34,12 @@ export default function IndexPage() {
   const [answer, setAnswer] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [result, setResult] = useState<AnswerResult[]>([]);
+  const [loading, setLoading] = useState(false)
+  const [transcript, setTranscript] = useState('')
+  // 録音関連
+  const recorder = useRef<typeof MicRecorder>(null)
+  const [audioFile, setAudioFile] = useState<File | null>(null)
+  const [recording, setRecording] = useState(false)
 
   // 問題はDBから取得できる様にあらかじめ用意しておく。
   const questionList = [
@@ -52,7 +59,87 @@ export default function IndexPage() {
 
   useEffect(() => {
     setQuestionNum(Math.floor(Math.random() * (questionList.length - 1)));
+    recorder.current = new MicRecorder({ bitRate: 128 })
   }, []);
+
+  useEffect(() => {
+    console.log("取得した音声ファイル", audioFile)
+    const fn = async () => {
+      try {
+        if (audioFile) {
+          // 送信データ
+          let formData = new FormData()
+          formData.append('file', audioFile)
+          formData.append('xxxxx', 'aaaaa')
+          console.log(formData.entries)
+
+          // Whisper API
+          const response = await fetch(`/api/whisper`, {
+            method: 'POST',
+            body: formData,
+          })
+          const response_data = await response.json()
+          console.log("🐮", response_data)
+          setAnswer(response_data.transcript)
+          // 音声認識チェック
+          if (response_data.transcript) {
+            setTranscript(response_data.transcript)
+          }
+        } else {
+          console.log("🐮 no audio file")
+        }
+      } catch (error) {
+        console.log("errorrrrrr")
+        alert("🐔" + error)
+        setLoading(false)
+      }
+      setAudioFile(null)
+    }
+
+    fn()
+  }, [audioFile])
+
+  // 音声録音開始
+  const startRecording = async () => {
+    // ストップウォッチ開始
+    //reset()
+    // 録音開始
+    await recorder.current
+      .start()
+      .then(() => {
+        setRecording(true)
+      })
+      .catch((error: string) => {
+        console.error(error)
+      })
+  }
+  // 音声録音停止
+  const stopRecording = async () => {
+    console.log("stopRecording")
+    // ストップウォッチ停止
+    // pause()
+    // 録音停止
+    await recorder.current
+      .stop()
+      .getMp3()
+      .then(([buffer, blob]: any) => {
+        // 音声ファイル生成
+        const file = new File(buffer, 'audio.mp3', {
+          type: blob.type,
+          lastModified: Date.now(),
+        })
+        // 録音停止
+        setLoading(true)
+        setAudioFile(file)
+      })
+      .catch((error: string) => {
+        console.log(error)
+        setLoading(false)
+      })
+
+    // 録音停止
+    setRecording(false)
+  }
 
   /**
    * 回答ボタンを押したときの処理
@@ -96,6 +183,9 @@ export default function IndexPage() {
     }
   };
 
+
+
+
   // Returning the JSX elements to render on the page
   return (
     <>
@@ -131,6 +221,8 @@ export default function IndexPage() {
                   //label="Outlined"
                   variant="outlined"
                   value={answer}
+
+                  helperText="ここに回答を入力"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault(); // Enterキーでの自動送信を防ぐ
@@ -146,11 +238,13 @@ export default function IndexPage() {
                 <Button
                   variant="outlined"
                   color="info"
-                  onClick={handleClick}
+                  onClick={startRecording}
                   startIcon={<BlockIcon />}
                 >
                   声（未実装）
                 </Button>
+                <Button onClick={stopRecording}
+                >🔸停止</Button>
               </Grid>
             </Grid>
 
@@ -169,7 +263,7 @@ export default function IndexPage() {
               <hr />
               <Pokemon />
               <Demo />
-             
+
               <Link href="/day">Day</Link>
               <hr />
               <Link href="redux-sample">redux-sample</Link>
