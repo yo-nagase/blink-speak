@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log("🐵", fileContent)
     // Whisper
-    const response = await openai.createTranscription(fileContent, 'whisper-1')
+    const response = await openai.createTranscription(fileContent, 'whisper-1', undefined, undefined, undefined, "en")
     const transcript = response.data.text
     console.log("📢transcript:", transcript)
     res.status(200).json({ transcript })

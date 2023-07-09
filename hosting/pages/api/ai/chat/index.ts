@@ -14,6 +14,7 @@ export default async function handler(req, res) {
       const chat2 = new ChatOpenAI({
         streaming: true,
         modelName: "gpt-3.5-turbo-0613",
+        temperature: 0,
         callbacks: [
           {
             handleLLMNewToken(token: string) {

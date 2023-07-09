@@ -59,7 +59,7 @@ export default function IndexPage() {
 
   useEffect(() => {
     setQuestionNum(Math.floor(Math.random() * (questionList.length - 1)));
-    recorder.current = new MicRecorder({ bitRate: 128 })
+    recorder.current = new MicRecorder({ bitRate: 256 })
   }, []);
 
   useEffect(() => {
@@ -70,7 +70,6 @@ export default function IndexPage() {
           // 送信データ
           let formData = new FormData()
           formData.append('file', audioFile)
-          formData.append('xxxxx', 'aaaaa')
           console.log(formData.entries)
 
           // Whisper API
@@ -89,8 +88,8 @@ export default function IndexPage() {
           console.log("🐮 no audio file")
         }
       } catch (error) {
-        console.log("errorrrrrr")
-        alert("🐔" + error)
+        console.log("Error", error)
+        alert("🐔" + error )
         setLoading(false)
       }
       setAudioFile(null)
@@ -113,6 +112,7 @@ export default function IndexPage() {
         console.error(error)
       })
   }
+
   // 音声録音停止
   const stopRecording = async () => {
     console.log("stopRecording")
@@ -139,6 +139,7 @@ export default function IndexPage() {
 
     // 録音停止
     setRecording(false)
+ 
   }
 
   /**
@@ -235,16 +236,34 @@ export default function IndexPage() {
                 <Button variant="contained" onClick={handleClick} startIcon>
                   回答する
                 </Button>
-                <Button
-                  variant="outlined"
-                  color="info"
-                  onClick={startRecording}
-                  startIcon={<BlockIcon />}
-                >
-                  声（未実装）
-                </Button>
-                <Button onClick={stopRecording}
-                >🔸停止</Button>
+                {recording ?
+                  <Button
+                    variant="outlined"
+                    color="info"
+                    onClick={stopRecording}
+                    sx={{ minWidth: "150px" }}
+                  >🔸停止</Button>
+
+                  :
+                  <Button
+                    variant="outlined"
+                    color="info"
+                    onClick={startRecording}
+                    startIcon={<BlockIcon />}
+                    sx={{ minWidth: "150px" }}
+                  >
+                    音声で入力
+                  </Button>
+                }
+              </Grid>
+              <Grid item xs={12} sm={12}>
+
+                {recording ?
+                  <span>🔴録音中</span>
+                  :
+                  <span>🔵停止中</span>}
+
+
               </Grid>
             </Grid>
 
