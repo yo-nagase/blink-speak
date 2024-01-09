@@ -1,19 +1,22 @@
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import { HumanChatMessage, SystemChatMessage } from "langchain/schema";
+import { HumanChatMessage, HumanMessage, SystemChatMessage } from "langchain/schema";
 
 import { OpenAI } from "langchain/llms/openai";
 import { loadSummarizationChain } from "langchain/chains";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import * as fs from "fs";
-import { BasePromptTemplate, PromptTemplate } from "langchain";
+import { Chat } from "openai/resources";
+
 
 export default async function handler(req, res) {
+  console.log("🐵🐵🐵🐵", req.query);
   if (req.method === "GET") {
     if (req.query.param1 == "sync") {
       //   これでチャットは実現できる
       const chat2 = new ChatOpenAI({
         streaming: true,
         modelName: "gpt-3.5-turbo-0613",
+        // modelName: "gpt-3.5-turbo-1106",
         temperature: 0,
         callbacks: [
           {
@@ -22,17 +25,17 @@ export default async function handler(req, res) {
             },
           },
         ],
+        // modelKwargs: { "response_format": "json" }
       });
     } else {
       const id = req.query.id;
-      const question = req.query.question ?? "ああああ";
-      const answer = req.query.answer ?? "回答";
+      const question = req.query.question ?? "xxxxx";
+      const answer = req.query.answer ?? "xxxxx";
 
       console.log("question", question);
       console.log("answer", answer);
 
       const chat = new ChatOpenAI({
-
         temperature: 0,
         verbose: true,
       });
@@ -40,7 +43,7 @@ export default async function handler(req, res) {
       // start time so that we can measure how long it takes to get a response
       const start = new Date().getTime();
 
-      const responseB = await chat.call([
+      const responseB = await chat.invoke([
         // new SystemChatMessage(
         //   `your goal is to give a sentence in Japanese to requester and user gives you translated answer in English,
         // when you get answer from user, judge if the answer is natural or not,
@@ -61,7 +64,7 @@ export default async function handler(req, res) {
 
         // `
         // ),
-        new HumanChatMessage(`
+        new HumanMessage(`
 あなたの役割は質問に対してユーザが答えた英文を評価し、回答することです。評価スコアは、1-100の点数で答えます。評価のポイントはそれぞれ以下に示したJSONのコメントに従います。
 評価結果はJSONフォーマットで回答し、以下の項目を含めてください。レスポンスはJSONのみで、それ以外の余分な文字列の追加はしないでください。
 評価したスコアは英会話ゲームで利用し、スコアの合計を入力者同士で競い合いますので、特に100点は本当に正しい場合以外は出さない様にしてください。
@@ -107,6 +110,7 @@ ${answer}
       const end = new Date().getTime();
       const time = end - start;
 
+      console.log("🐸🐸🐸🐸", { message: responseB, take: time })
       res.status(200).json({ message: responseB, take: time });
     }
   }

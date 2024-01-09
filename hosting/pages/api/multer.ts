@@ -3,7 +3,7 @@ import multer, { FileFilterCallback } from 'multer';
 import { Request, Response } from 'express';
 
 
-import { Configuration, OpenAIApi } from 'openai'
+
 import type { NextApiRequest, NextApiResponse } from 'next'
 const app = express();
 

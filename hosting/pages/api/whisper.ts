@@ -1,14 +1,13 @@
-import { Configuration, OpenAIApi } from 'openai'
+import Configuration from 'openai'
+import OpenAI from "openai";
 import type { NextApiRequest, NextApiResponse } from 'next'
 import formidable, { File } from 'formidable'
 import fs from 'fs'
-import { fi } from '@faker-js/faker'
 
-const configuration = new Configuration({
+
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-})
-
-const openai = new OpenAIApi(configuration)
+});
 
 const form = formidable({ multiples: true, keepExtensions: true })
 
@@ -40,9 +39,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log("🐵", fileContent)
     // Whisper
-    const response = await openai.createTranscription(fileContent, 'whisper-1', undefined, undefined, undefined, "en")
-    const transcript = response.data.text
+    // const response = await openai.createTranscription(fileContent, 'whisper-1', undefined, undefined, undefined
+    //   //,"en"
+    // )
+
+    const response = await openai.audio.transcriptions.create({
+      file: fileContent,
+      model: "whisper-1",
+    });
+
+    const transcript = response.text
     console.log("📢transcript:", transcript)
+    res.setHeader('Access-Control-Allow-Origin', '*')
     res.status(200).json({ transcript })
   } catch (error) {
     console.error("🈲", error)

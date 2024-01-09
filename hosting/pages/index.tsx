@@ -54,7 +54,12 @@ export default function IndexPage() {
     { id: nanoid, contents: "どんな食べ物が好きですか？" },
     { id: nanoid, contents: "沖縄は日本のどのあたりにありますか？" },
     { id: nanoid, contents: "東京にはたくさんの外国人が訪れています。" },
+    { id: nanoid, contents: "コーディング規約に従うことは、チームのコラボレーションを助けます。" },
+    { id: nanoid, contents: "バグを修正するためにコードをデバッグしています。" },
+    { id: nanoid, contents: "プログラミング言語を学ぶために、オンラインコースを受講しています。" },
     { id: nanoid, contents: "私はこの前のテストで１００点を取りました。" },
+    { id: nanoid, contents: "変数とは、データを格納するための重要な要素です。" },
+    { id: nanoid, contents: "ユーザーインターフェースのデザインにはユーザビリティを考慮する必要があります。" },
   ];
 
   useEffect(() => {
@@ -89,16 +94,17 @@ export default function IndexPage() {
         }
       } catch (error) {
         console.log("Error", error)
-        alert("🐔" + error )
+        alert("🐔" + error)
         setLoading(false)
       }
       setAudioFile(null)
     }
-
     fn()
   }, [audioFile])
 
-  // 音声録音開始
+  /**
+   * 音声録音開始
+   */
   const startRecording = async () => {
     // ストップウォッチ開始
     //reset()
@@ -113,7 +119,9 @@ export default function IndexPage() {
       })
   }
 
-  // 音声録音停止
+  /**
+   * 音声録音停止
+   */
   const stopRecording = async () => {
     console.log("stopRecording")
     // ストップウォッチ停止
@@ -139,7 +147,6 @@ export default function IndexPage() {
 
     // 録音停止
     setRecording(false)
- 
   }
 
   /**
@@ -158,9 +165,9 @@ export default function IndexPage() {
         )
         .then((response) => {
           // TODO: ここで配列を更新する。IDを使って検索
-          const responseJson: AnswerResult = JSON.parse(response.data.message.text)
+          //console.log("🐔", response.data.message.kwargs.content);
+          const responseJson: AnswerResult = JSON.parse(response.data.message.kwargs.content)
           setResult([...result, { ...responseJson, is_loading: false }]);
-
 
           //          const data = response.data;
           // const updatedItems = result.map(item => {
@@ -233,7 +240,7 @@ export default function IndexPage() {
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
-                <Button variant="contained" onClick={handleClick} startIcon>
+                <Button variant="contained" onClick={handleClick} >
                   回答する
                 </Button>
                 {recording ?
@@ -243,13 +250,12 @@ export default function IndexPage() {
                     onClick={stopRecording}
                     sx={{ minWidth: "150px" }}
                   >🔸停止</Button>
-
                   :
                   <Button
                     variant="outlined"
                     color="info"
                     onClick={startRecording}
-                    startIcon={<BlockIcon />}
+                    // startIcon={<BlockIcon />}
                     sx={{ minWidth: "150px" }}
                   >
                     音声で入力

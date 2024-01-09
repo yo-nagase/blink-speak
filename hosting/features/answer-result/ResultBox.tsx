@@ -25,7 +25,6 @@ export default function ResultBox(props: AnswerResult) {
         fontSize: '16px',
     };
 
-
     // Returning the JSX elements to render on the page
     return (
         <>
