@@ -1,8 +1,9 @@
-import { OpenAI } from "langchain";
-import { ChatOpenAI } from "langchain/chat_models/openai";
-import { OpenAIChat } from "langchain/llms/openai";
-import { HumanChatMessage, SystemChatMessage } from "langchain/schema";
 
+/**
+ * これは使っていない・・？
+ * @param req 
+ * @param res 
+ */
 export default async function handler(req, res) {
 
 
@@ -20,6 +21,7 @@ export default async function handler(req, res) {
     const sleep2 = (msec) => new Promise((resolve) => setTimeout(resolve, msec));
     await sleep2(3000)
 
-    res.status(200).json({ message: responseB,id:"xxxxxd" });
+
+    res.status(200).json({ message: responseB, id: "xxxxxd" });
   }
 }

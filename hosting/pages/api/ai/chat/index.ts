@@ -15,8 +15,8 @@ export default async function handler(req, res) {
       //   これでチャットは実現できる
       const chat2 = new ChatOpenAI({
         streaming: true,
-        modelName: "gpt-3.5-turbo-0613",
-        // modelName: "gpt-3.5-turbo-1106",
+        //modelName: "gpt-3.5-turbo-0613",
+        modelName: "gpt-3.5-turbo-1106",
         temperature: 0,
         callbacks: [
           {
