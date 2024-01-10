@@ -1,5 +1,4 @@
-
-
+import OpenAI from 'openai';
 
 // 問題はDBから取得できる様にあらかじめ用意しておく。
 const questionList = [{
@@ -149,10 +148,37 @@ export default async function handler(req, res) {
 
     // 0からquestionListのランダム数値を生成
     const randomNum = Math.floor(Math.random() * questionList.length);
+    const returnQuestion = questionList[randomNum]
 
+    // ここで暫定的に、問題を生成して設定する
+    console.log(await generateQuestion({ level: 600, category: ['プログラミング', 'IT'] }))
+    // TODO: ここで生成した問題を設定する
+    //returnQuestion.contents = "ぼぼよよ"
 
-
-    res.status(200).json(questionList[randomNum]);
+    res.status(200).json(returnQuestion);
 
   }
+}
+
+
+async function generateQuestion(params:
+  { level: number, category: string[] } =
+  { level: 600, category: ['プログラミング', 'IT'] }) {
+  // OpenAIのAPIを呼び出して、問題を生成する
+
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  const chatCompletion = await openai.chat.completions.create({
+    messages: [{
+      role: "system",
+      content: "You are a helpful assistant designed to output JSON.",
+    },
+    { role: "user", content: `TOEIC${params.level}点くらいの人が答えられる問題を作ってください` }],
+    model: "gpt-3.5-turbo-1106",
+    response_format: { type: "json_object" },
+    // response_format: "json",
+  });
+  return chatCompletion.choices[0].message.content
 }
