@@ -14,6 +14,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import "../css/shake.module.css";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { nanoid } from "@reduxjs/toolkit";
@@ -41,29 +42,41 @@ export default function IndexPage() {
   const [audioFile, setAudioFile] = useState<File | null>(null)
   const [recording, setRecording] = useState(false)
 
+  // エラーの時に揺らす
+  const [shake, setShake] = useState(false);
+
   // 問題はDBから取得できる様にあらかじめ用意しておく。
   const questionList = [
-    { id: nanoid, contents: "これはあなたのペンですか？" },
-    { id: nanoid, contents: "私は東京に住んでいます。" },
-    { id: nanoid, contents: "今日目覚ましを8時にセットしました" },
-    { id: nanoid, contents: "私は、名古屋出身です" },
-    { id: nanoid, contents: "今日は朝ごはんを食べましたか？" },
-    { id: nanoid, contents: "今日見た映画は、とても感動的でした。" },
-    { id: nanoid, contents: "もし私がカエルだったら草を食べていたでしょう" },
-    { id: nanoid, contents: "海外に行ったことはありますか？" },
-    { id: nanoid, contents: "どんな食べ物が好きですか？" },
-    { id: nanoid, contents: "沖縄は日本のどのあたりにありますか？" },
-    { id: nanoid, contents: "東京にはたくさんの外国人が訪れています。" },
-    { id: nanoid, contents: "コーディング規約に従うことは、チームのコラボレーションを助けます。" },
-    { id: nanoid, contents: "バグを修正するためにコードをデバッグしています。" },
-    { id: nanoid, contents: "プログラミング言語を学ぶために、オンラインコースを受講しています。" },
-    { id: nanoid, contents: "私はこの前のテストで１００点を取りました。" },
-    { id: nanoid, contents: "変数とは、データを格納するための重要な要素です。" },
-    { id: nanoid, contents: "ユーザーインターフェースのデザインにはユーザビリティを考慮する必要があります。" },
+    { id: "1", contents: "これはあなたのペンですか？", level: 600, category: ["プログラミング", "IT"] },
+    { id: "2", contents: "私は東京に住んでいます。", level: 600, category: ["プログラミング", "IT"] },
+    { id: "3", contents: "今日目覚ましを8時にセットしました", level: 600, category: ["プログラミング", "IT"] },
+    { id: "4", contents: "私は、名古屋出身です", level: 600, category: ["プログラミング", "IT"] },
+    { id: "5", contents: "今日は朝ごはんを食べましたか？", level: 600, category: ["プログラミング", "IT"] },
+    { id: "6", contents: "今日見た映画は、とても感動的でした。", level: 600, category: ["プログラミング", "IT"] },
+    { id: "7", contents: "もし私がカエルだったら草を食べていたでしょう", level: 600, category: ["プログラミング", "IT"] },
+    { id: "8", contents: "海外に行ったことはありますか？", level: 600, category: ["プログラミング", "IT"] },
+    { id: "9", contents: "どんな食べ物が好きですか？", level: 600, category: ["プログラミング", "IT"] },
+    { id: "10", contents: "沖縄は日本のどのあたりにありますか？", level: 600, category: ["プログラミング", "IT"] },
+    { id: "11", contents: "東京にはたくさんの外国人が訪れています。", level: 600, category: ["プログラミング", "IT"] },
+    { id: "12", contents: "コーディング規約に従うことは、チームのコラボレーションを助けます。", level: 600, category: ["プログラミング", "IT"] },
+    { id: "13", contents: "バグを修正するためにコードをデバッグしています。", level: 600, category: ["プログラミング", "IT"] },
+    { id: "14", contents: "プログラミング言語を学ぶために、オンラインコースを受講しています。", level: 600, category: ["プログラミング", "IT"] },
+    { id: "15", contents: "私はこの前のテストで１００点を取りました。", level: 600, category: ["プログラミング", "IT"] },
+    { id: "16", contents: "変数とは、データを格納するための重要な要素です。", level: 600, category: ["プログラミング", "IT"] },
+    { id: "17", contents: "ユーザーインターフェースのデザインにはユーザビリティを考慮する必要があります。", level: 600, category: ["プログラミング", "IT"] },
   ];
 
   useEffect(() => {
-    setQuestionNum(Math.floor(Math.random() * (questionList.length - 1)));
+    // サーバサイドから問題を取得する
+    const fn = async () => {
+      const response = await fetch(`api/ai/question`, {
+        method: 'GET',
+        // body: formData,
+      })
+      console.log("🐮!!!", await response.json())
+      //setQuestionNum(Math.floor(Math.random() * (questionList.length - 1)));
+    }
+    fn()
     recorder.current = new MicRecorder({ bitRate: 256 })
   }, []);
 
@@ -156,6 +169,10 @@ export default function IndexPage() {
     console.log("回答ボタンが押されました。");
     // 回答が入力されていない場合は処理を中断する
     if (answer.length == 0) {
+      console.log("揺らします")
+      setShake(true);
+      setTimeout(() => setShake(false), 500); // アニメーションの時間に合わせて状態をリセット
+
       return
     }
     const newId = nanoid();
@@ -233,6 +250,8 @@ export default function IndexPage() {
                   variant="outlined"
                   value={answer}
                   helperText="ここに回答を入力"
+                  // FIXME: 揺らせない・・・クラスを指定する方法が間違っている？？
+                  className={shake ? 'shake-animation' : ''}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault(); // Enterキーでの自動送信を防ぐ

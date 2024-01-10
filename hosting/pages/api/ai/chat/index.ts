@@ -9,7 +9,7 @@ import { Chat } from "openai/resources";
 
 
 export default async function handler(req, res) {
-  console.log("🐵🐵🐵🐵", req.query);
+  console.log("🐵Query🐵", req.query);
   if (req.method === "GET") {
     if (req.query.param1 == "sync") {
       //   これでチャットは実現できる
