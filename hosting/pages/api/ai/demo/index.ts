@@ -5,8 +5,6 @@
  * @param res 
  */
 export default async function handler(req, res) {
-
-
   if (req.method === "GET") {
     // timeout
     const sleep1 = (msec) => new Promise((resolve) => setTimeout(resolve, msec));

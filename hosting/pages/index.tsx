@@ -152,8 +152,12 @@ export default function IndexPage() {
   /**
    * 回答ボタンを押したときの処理
    */
-  const handleClick = async () => {
-    console.log("Click happened");
+  const handleAnswerClick = async () => {
+    console.log("回答ボタンが押されました。");
+    // 回答が入力されていない場合は処理を中断する
+    if (answer.length == 0) {
+      return
+    }
     const newId = nanoid();
     try {
       //setIsloading(true);
@@ -193,7 +197,6 @@ export default function IndexPage() {
 
 
 
-
   // Returning the JSX elements to render on the page
   return (
     <>
@@ -229,18 +232,17 @@ export default function IndexPage() {
                   //label="Outlined"
                   variant="outlined"
                   value={answer}
-
                   helperText="ここに回答を入力"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault(); // Enterキーでの自動送信を防ぐ
-                      handleClick(); // Enterキーが押されたときに呼び出す関数
+                      handleAnswerClick(); // Enterキーが押されたときに呼び出す関数
                     }
                   }}
                 />
               </Grid>
               <Grid item xs={12} sm={12}>
-                <Button variant="contained" onClick={handleClick} >
+                <Button variant="contained" onClick={handleAnswerClick} >
                   回答する
                 </Button>
                 {recording ?
@@ -263,13 +265,10 @@ export default function IndexPage() {
                 }
               </Grid>
               <Grid item xs={12} sm={12}>
-
-                {recording ?
+                {/* {recording ?
                   <span>🔴録音中</span>
                   :
-                  <span>🔵停止中</span>}
-
-
+                  <span>🔵停止中</span>} */}
               </Grid>
             </Grid>
 

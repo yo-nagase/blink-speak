@@ -44,44 +44,23 @@ export default async function handler(req, res) {
       const start = new Date().getTime();
 
       const responseB = await chat.invoke([
-        // new SystemChatMessage(
-        //   `your goal is to give a sentence in Japanese to requester and user gives you translated answer in English,
-        // when you get answer from user, judge if the answer is natural or not,
-        // when user answer the question,
-        // return response in json format as indicated below.
-        // the response will be used in the client system, so please make sure that JSON format is correct. 
-
-        // \`\`\`:json
-        // {
-        //  adivice : string, // advice to improve the answer
-        //  natural_score:number,  // 100 is the best indicate how natural the answer is
-        //  grammer_score: number,  // 100 is the best score, how grammerly correct the answer is
-        //  proposals:string[] // 1-5 proposals to improve the answer
-        // }
-        // \`\`\`
-
-        // YOUR QUESTION:
-
-        // `
-        // ),
         new HumanMessage(`
 あなたの役割は質問に対してユーザが答えた英文を評価し、回答することです。評価スコアは、1-100の点数で答えます。評価のポイントはそれぞれ以下に示したJSONのコメントに従います。
 評価結果はJSONフォーマットで回答し、以下の項目を含めてください。レスポンスはJSONのみで、それ以外の余分な文字列の追加はしないでください。
 評価したスコアは英会話ゲームで利用し、スコアの合計を入力者同士で競い合いますので、特に100点は本当に正しい場合以外は出さない様にしてください。
 できるだけ素早く回答をしてください。
 
-
 \`\`\`
 {
   "key" : string, // this is question id. set same id as you received 
   "is_correct" : boolean // the user's answer is corrct or not 
- "grammer_score" : number // if user's answer is correct grammaticaly, this score would be 100
- "natural_score" : number  //if user's expression is natural perfectly, this score would be 100
-"comment_eng" : string, // give advice to user to improve the answer in English
-"comment_jpn" : string, // 日本語で正解の為のコメントを書いてください。問題文を引用する時は問題と同じ英語を用いてください。
-"question": string, // question to user. always same sentence as below.
-"user_answer" : string, // this is user's answer
-"proposal_answer" :  string, // give a proposal answer in English. translation is NOT needed.and only one proposal is enough. no advice, just give a answer only.
+  "grammer_score" : number // if user's answer is correct grammaticaly, this score would be 100
+  "natural_score" : number  //if user's expression is natural perfectly, this score would be 100
+  "comment_eng" : string, // give advice to user to improve the answer in English
+  "comment_jpn" : string, // 日本語で正解の為のコメントを書いてください。問題文を引用する時は問題と同じ英語を用いてください。
+  "question": string, // question to user. always same sentence as below.
+  "user_answer" : string, // this is user's answer
+  "proposal_answer" :  string, // give a proposal answer in English. translation is NOT needed.and only one proposal is enough. no advice, just give a answer only.
 }
 
 \`\`\`
