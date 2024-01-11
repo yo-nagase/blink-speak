@@ -17,7 +17,6 @@ export default async function handler(req, res) {
     //   openAIApiKey: process.env.OPENAI_API_KEY,
     // });
 
-
     const completion = await openai.chat.completions.create({
       messages: [{
         role: 'assistant',
@@ -31,7 +30,6 @@ export default async function handler(req, res) {
          proposals:string[]}`}],
       model: "gpt-3.5-turbo-1106",
     });
-
     console.log(completion);
 
     res.status(200).json({ message: completion.choices[0] });

@@ -1,149 +1,22 @@
 import OpenAI from 'openai';
-
-// 問題はDBから取得できる様にあらかじめ用意しておく。
-const questionList = [{
-  'id': '1',
-  'contents': 'これはあなたのペンですか？',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 30,
-  'wrongCount': 31
-},
-{
-  'id': '2',
-  'contents': '私は東京に住んでいます。',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 99,
-  'wrongCount': 0
-},
-{
-  'id': '3',
-  'contents': '今日目覚ましを8時にセットしました',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 13,
-  'wrongCount': 70
-},
-{
-  'id': '4',
-  'contents': '私は、名古屋出身です',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 88,
-  'wrongCount': 95
-},
-{
-  'id': '5',
-  'contents': '今日は朝ごはんを食べましたか？',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 66,
-  'wrongCount': 56
-},
-{
-  'id': '6',
-  'contents': '今日見た映画は、とても感動的でした。',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 67,
-  'wrongCount': 84
-},
-{
-  'id': '7',
-  'contents': 'もし私がカエルだったら草を食べていたでしょう',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 0,
-  'wrongCount': 42
-},
-{
-  'id': '8',
-  'contents': '海外に行ったことはありますか？',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 83,
-  'wrongCount': 53
-},
-{
-  'id': '9',
-  'contents': 'どんな食べ物が好きですか？',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 28,
-  'wrongCount': 31
-},
-{
-  'id': '10',
-  'contents': '沖縄は日本のどのあたりにありますか？',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 49,
-  'wrongCount': 46
-},
-{
-  'id': '11',
-  'contents': '東京にはたくさんの外国人が訪れています。',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 41,
-  'wrongCount': 29
-},
-{
-  'id': '12',
-  'contents': 'コーディング規約に従うことは、チームのコラボレーションを助けます。',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 66,
-  'wrongCount': 17
-},
-{
-  'id': '13',
-  'contents': 'バグを修正するためにコードをデバッグしています。',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 25,
-  'wrongCount': 83
-},
-{
-  'id': '14',
-  'contents': 'プログラミング言語を学ぶために、オンラインコースを受講しています。',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 68,
-  'wrongCount': 53
-},
-{
-  'id': '15',
-  'contents': '私はこの前のテストで１００点を取りました。',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 52,
-  'wrongCount': 93
-},
-{
-  'id': '16',
-  'contents': '変数とは、データを格納するための重要な要素です。',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 62,
-  'wrongCount': 95
-},
-{
-  'id': '17',
-  'contents': 'ユーザーインターフェースのデザインにはユーザビリティを考慮する必要があります。',
-  'level': 600,
-  'category': ['プログラミング', 'IT'],
-  'correctCount': 49,
-  'wrongCount': 20
-}]
+import { questionList } from './question-list';
+import { createHash } from 'node:crypto'
+import { QuestionRequest } from '../../../../types/Question.type';
 
 
+/**
+ * 質問を生成するAPI
+ * level
+ * @param req 
+ * @param res 
+ */
 export default async function handler(req, res) {
   console.log("🐵🐵🐵🐵", req.query);
+
+  const params: QuestionRequest = req.query
+  console.log("🐵🐵", params);
+
   if (req.method === "GET") {
-
-
     // ランダムで問題を取得する
 
     // 0からquestionListのランダム数値を生成
@@ -151,34 +24,55 @@ export default async function handler(req, res) {
     const returnQuestion = questionList[randomNum]
 
     // ここで暫定的に、問題を生成して設定する
-    console.log(await generateQuestion({ level: 600, category: ['プログラミング', 'IT'] }))
-    // TODO: ここで生成した問題を設定する
-    //returnQuestion.contents = "ぼぼよよ"
+    // TODO: ここで生成した問題を設定する。これは仮の処理
+    const newQuestion = await generateQuestion(params)
+    console.log("🚢", newQuestion)
+    returnQuestion.contents = newQuestion.question
+
+    //質問文からhashを生成する
+    returnQuestion.hash = createHash('md5').update(newQuestion.question).digest('hex');
+    console.log("Hash:", returnQuestion.hash)
+
 
     res.status(200).json(returnQuestion);
 
   }
 }
 
-
-async function generateQuestion(params:
-  { level: number, category: string[] } =
-  { level: 600, category: ['プログラミング', 'IT'] }) {
+/**
+ * 問題を生成する（OpenAIのAPIを呼び出す）
+ * これは暫定版であり、将来的にはあらかじめ問題をDBに登録しておく方法と比較してどちらにするかを決める
+ * @param params 
+ * @returns 
+ */
+async function generateQuestion(params: QuestionRequest): Promise<{ question: string }> {
   // OpenAIのAPIを呼び出して、問題を生成する
 
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   });
+  console.log("📗パラメータ:", params)
+  console.log("level:", params.level, " カテゴリ:", params.category, "の問題を作ります")
 
   const chatCompletion = await openai.chat.completions.create({
-    messages: [{
-      role: "system",
-      content: "You are a helpful assistant designed to output JSON.",
-    },
-    { role: "user", content: `TOEIC${params.level}点くらいの人が答えられる問題を作ってください` }],
+    messages: [
+      {
+        role: "system",
+        content: "You are a helpful assistant designed to output JSON.",
+      },
+      {
+        role: "user", content: `TOEIC点くらいの人が答えられる問題を作ってください
+TOEIC${params.level}点レベルの例文を日本語で作ってください
+できれば、${params.category}のカテゴリに該当する様な文章を例題として出力してください。
+例文の長さは5語から30語くらいになる様にしてください。例文は一つだけ出力してください。
+項目名は"question"としてください。
+    ` }],
     model: "gpt-3.5-turbo-1106",
+    // model: "gpt-4-1106-preview",
     response_format: { type: "json_object" },
     // response_format: "json",
   });
-  return chatCompletion.choices[0].message.content
+  const resultJson = JSON.parse(chatCompletion.choices[0].message.content)
+
+  return { question: resultJson.question }
 }

@@ -23,13 +23,12 @@ import { AnswerResult } from "../types/AnswerResult.type";
 import BlockIcon from "@mui/icons-material/Block";
 import Pokemon from "../components/Pokemon";
 import cuid from 'cuid';
-
+import LinearProgress from '@mui/material-next/LinearProgress';
 const MicRecorder = require('mic-recorder-to-mp3')
 
 import ResultBox from "../features/answer-result/ResultBox";
 import Demo from "../components/Demo";
 import useQuestion from "../hooks/useQuestion";
-import { get } from "http";
 // Defining the IndexPage component as default export
 export default function IndexPage() {
   const router = useRouter();
@@ -46,29 +45,8 @@ export default function IndexPage() {
 
   // エラーの時に揺らす
   const [shake, setShake] = useState(false);
-
   const { getNewQuestion, getCurrentQuestion, isQuestionLoading } = useQuestion();
 
-  // 問題はDBから取得できる様にあらかじめ用意しておく。
-  // const questionList = [
-  //   { id: "1", contents: "これはあなたのペンですか？", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "2", contents: "私は東京に住んでいます。", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "3", contents: "今日目覚ましを8時にセットしました", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "4", contents: "私は、名古屋出身です", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "5", contents: "今日は朝ごはんを食べましたか？", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "6", contents: "今日見た映画は、とても感動的でした。", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "7", contents: "もし私がカエルだったら草を食べていたでしょう", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "8", contents: "海外に行ったことはありますか？", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "9", contents: "どんな食べ物が好きですか？", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "10", contents: "沖縄は日本のどのあたりにありますか？", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "11", contents: "東京にはたくさんの外国人が訪れています。", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "12", contents: "コーディング規約に従うことは、チームのコラボレーションを助けます。", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "13", contents: "バグを修正するためにコードをデバッグしています。", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "14", contents: "プログラミング言語を学ぶために、オンラインコースを受講しています。", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "15", contents: "私はこの前のテストで１００点を取りました。", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "16", contents: "変数とは、データを格納するための重要な要素です。", level: 600, category: ["プログラミング", "IT"] },
-  //   { id: "17", contents: "ユーザーインターフェースのデザインにはユーザビリティを考慮する必要があります。", level: 600, category: ["プログラミング", "IT"] },
-  // ];
 
   useEffect(() => {
     // サーバサイドから問題を取得する
@@ -77,7 +55,8 @@ export default function IndexPage() {
       //   method: 'GET',
       //   // body: formData,
       // })
-      const res = await getNewQuestion()
+      // FIXME:一旦固定でカテゴリとレベルを指定するが、実際にはここはユーザ指定のものを渡す様にする
+      const res = await getNewQuestion({ level: 400, category: ["会計", "保育"] })
 
       // console.log("🐮!!!", await response.json())
       console.log("🐮🐮!!!", res)
@@ -212,7 +191,7 @@ export default function IndexPage() {
       setAnswer("");
       // 問題更新
       // setQuestionNum(Math.floor(Math.random() * (questionList.length - 1)));
-      getNewQuestion()
+      getNewQuestion({ level: 400, category: ["会計", "保育"] })
 
     } catch (error) {
       console.error(error);
@@ -220,8 +199,6 @@ export default function IndexPage() {
       setIsloading(false);
     }
   };
-
-
 
   // Returning the JSX elements to render on the page
   return (
@@ -244,14 +221,20 @@ export default function IndexPage() {
                 <Chip color="default" size="small" label="missed > 10" />
               </Grid>
               <Grid item xs={12} sm={12}>
-                <Typography sx={{ fontSize: "20px" }}>
-                  {
-                    // FIXME: LoadingIconに変える
-                    isQuestionLoading ? "問題を取得中(これはLoadingIconに変える）" :
-                    getCurrentQuestion() ? getCurrentQuestion().contents : ""
-                  }
-
-                </Typography>
+                <Box sx={{
+                  // display: 'flex',
+                  // alignItems: 'center',
+                  // justifyContent: 'center',
+                  //  height: "30px"
+                }}>
+                  <Typography sx={{ fontSize: "20px" }}>
+                    {
+                      // FIXME: LoadingIconに変える
+                      isQuestionLoading ? <LinearProgress /> :
+                        getCurrentQuestion() ? getCurrentQuestion().contents : ""
+                    }
+                  </Typography>
+                </Box>
               </Grid>
               <Grid item xs={12} sm={12}>
                 <TextField
@@ -318,9 +301,8 @@ export default function IndexPage() {
                 );
               })}
               <hr />
-              <Pokemon />
-              <Demo />
-
+      
+      
               <Link href="/day">Day</Link>
               <hr />
               <Link href="redux-sample">redux-sample</Link>
@@ -330,13 +312,6 @@ export default function IndexPage() {
 
 
       </Paper>
-      {/* </Grid>
-
-          <Grid item sx={{ display: { xs: 'none', sm: 'block' } }} xs={4}>
-            xxxxxx
-          </Grid>
-        </Grid>
-      </Stack> */}
     </>
   );
 }

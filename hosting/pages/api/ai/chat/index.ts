@@ -53,7 +53,7 @@ export default async function handler(req, res) {
   "comment_jpn" : string, // 日本語で正解の為のコメントを書いてください。問題文を引用する時は問題と同じ英語を用いてください。
   "question": string, // question to user. always same sentence as below.
   "user_answer" : string, // this is user's answer
-  "proposal_answer" :  string, // give a proposal answer in English. translation is NOT needed.and only one proposal is enough. no advice, just give a answer only.
+  "proposal_answer" :  string, // give a proposal answer which translate question to English. translation is NOT needed. only one proposal is enough. no advice, just give a answer only.
 }
 
 \`\`\`

@@ -46,6 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const response = await openai.audio.transcriptions.create({
       file: fileContent,
       model: "whisper-1",
+      language:"en"
     });
 
     const transcript = response.text

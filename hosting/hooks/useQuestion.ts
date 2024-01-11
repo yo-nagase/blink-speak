@@ -16,19 +16,11 @@ import {
 } from "@mui/material";
 import "../css/shake.module.css";
 import axios from "axios";
-import { useRouter } from "next/router";
-import { nanoid } from "@reduxjs/toolkit";
 import { useEffect, useRef, useState } from "react";
-import { AnswerResult } from "../types/AnswerResult.type";
-import BlockIcon from "@mui/icons-material/Block";
-import Pokemon from "../components/Pokemon";
-import cuid from 'cuid';
 
 const MicRecorder = require('mic-recorder-to-mp3')
 
-import ResultBox from "../features/answer-result/ResultBox";
-import Demo from "../components/Demo";
-import { Question } from "../types/QuestionDto.type";
+import { Question, QuestionRequest } from "../types/Question.type";
 
 /**
  * クライアントサイドでの問題の情報を扱う
@@ -39,10 +31,15 @@ export default function useQuestion() {
   const [currentQuestion, setCurrentQuestion] = useState<Question>();
   const [isQuestionLoading, setIsQuestionLoading] = useState<boolean>(false);
 
-  // 新しい質問を取得する
-  const getNewQuestion = async () => {
+  /**
+   * 新しい質問をAPIから取得する
+   * @param params 
+   * @returns 
+   */
+  const getNewQuestion = async (params: QuestionRequest): Promise<Question> => {
     setIsQuestionLoading(true);
-    const result = await axios.get<Question>("/api/ai/question");
+    console.log("🈲", params)
+    const result = await axios.get<Question>("/api/ai/question", { params: { level: params.level, category: JSON.stringify(params.category) } });
     setCurrentQuestion(result.data);
     setIsQuestionLoading(false);
     return result.data
