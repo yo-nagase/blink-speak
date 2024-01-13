@@ -56,7 +56,7 @@ export default function IndexPage() {
       //   // body: formData,
       // })
       // FIXME:一旦固定でカテゴリとレベルを指定するが、実際にはここはユーザ指定のものを渡す様にする
-      const res = await getNewQuestion({ level: 400, category: ["会計", "保育"] })
+      const res = await getNewQuestion({ level: 300, category: ["", "一般"] })
 
       // console.log("🐮!!!", await response.json())
       console.log("🐮🐮!!!", res)
@@ -191,7 +191,7 @@ export default function IndexPage() {
       setAnswer("");
       // 問題更新
       // setQuestionNum(Math.floor(Math.random() * (questionList.length - 1)));
-      getNewQuestion({ level: 400, category: ["会計", "保育"] })
+      getNewQuestion({ level: 300, category: ["IT", "一般"] })
 
     } catch (error) {
       console.error(error);
