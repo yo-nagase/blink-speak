@@ -5,15 +5,8 @@ import {
     Container,
     Grid,
 } from "@mui/material";
-//import CircularProgress from '@mui/material-next/CircularProgress';
-import axios from "axios";
-import { useRouter } from "next/router";
-import { nanoid } from "@reduxjs/toolkit";
 import { AnswerResult } from "../../types/AnswerResult.type";
 import DiffVewer from "../../components/DiffViewer";
-
-
-
 
 // Defining the IndexPage component as default export
 export default function ResultBox(props: AnswerResult) {

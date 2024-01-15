@@ -62,9 +62,10 @@ async function generateQuestion(params: QuestionRequest): Promise<{ question: st
       },
       {
         role: "user", content: `TOEIC点くらいの人が答えられる問題を作ってください
-TOEIC${params.level}点レベルの例文を日本語で作ってください
-できれば、${params.category}のカテゴリに該当する様な文章を例題として出力してください。
-例文の長さは5語から30語くらいになる様にしてください。例文は一つだけ出力してください。
+TOEIC${params.level}点レベルの例文を日本語で作ってください`+
+// FIXME: ここでカテゴリを指定する。いったんコメントアウト
+//`できれば、${params.category}のカテゴリに該当する様な文章を例題として出力してください。`+
+`例文の長さは5語から30語くらいになる様にしてください。例文は一つだけ出力してください。
 項目名は"question"としてください。
     ` }],
     model: "gpt-3.5-turbo-1106",

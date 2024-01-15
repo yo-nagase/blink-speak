@@ -2,16 +2,23 @@
 import Link from "next/link";
 import Head from "next/head";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
+import MicIcon from '@mui/icons-material/Mic';
+import StopCircleIcon from '@mui/icons-material/StopCircle';
 import {
   Box,
   Button,
   Chip,
+  CircularProgress,
   Container,
   Grid,
   Icon,
+  IconButton,
+  InputBase,
   Paper,
+  Skeleton,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import "../css/shake.module.css";
@@ -20,33 +27,40 @@ import { useRouter } from "next/router";
 import { nanoid } from "@reduxjs/toolkit";
 import { useEffect, useRef, useState } from "react";
 import { AnswerResult } from "../types/AnswerResult.type";
-import BlockIcon from "@mui/icons-material/Block";
-import Pokemon from "../components/Pokemon";
-import cuid from 'cuid';
 import LinearProgress from '@mui/material-next/LinearProgress';
 const MicRecorder = require('mic-recorder-to-mp3')
 
 import ResultBox from "../features/answer-result/ResultBox";
 import Demo from "../components/Demo";
 import useQuestion from "../hooks/useQuestion";
+import { RecordingStatus } from "../types/RecordingStatus";
+import StaticCard from "../features/answer-result/StaticCard";
 // Defining the IndexPage component as default export
+
+
+
 export default function IndexPage() {
   const router = useRouter();
   const [questionNum, setQuestionNum] = useState(0);
   const [answer, setAnswer] = useState("");
-  const [isLoading, setIsloading] = useState(false);
+  // const [isLoading, setIsloading] = useState(false);
   const [result, setResult] = useState<AnswerResult[]>([]);
-  const [loading, setLoading] = useState(false)
   const [transcript, setTranscript] = useState('')
+
+  const [recordingStatus, setRecordingStatus] = useState<RecordingStatus>("STOPPED")
+
   // 録音関連
   const recorder = useRef<typeof MicRecorder>(null)
   const [audioFile, setAudioFile] = useState<File | null>(null)
-  const [recording, setRecording] = useState(false)
+  // const [recording, setRecording] = useState(false)
+  // const [loading, setLoading] = useState(false)
 
   // エラーの時に揺らす
   const [shake, setShake] = useState(false);
   const { getNewQuestion, getCurrentQuestion, isQuestionLoading } = useQuestion();
 
+  const category = ["一般"]
+  const level = 400
 
   useEffect(() => {
     // サーバサイドから問題を取得する
@@ -56,7 +70,7 @@ export default function IndexPage() {
       //   // body: formData,
       // })
       // FIXME:一旦固定でカテゴリとレベルを指定するが、実際にはここはユーザ指定のものを渡す様にする
-      const res = await getNewQuestion({ level: 300, category: ["", "一般"] })
+      const res = await getNewQuestion({ level: level, category: category })
 
       // console.log("🐮!!!", await response.json())
       console.log("🐮🐮!!!", res)
@@ -69,6 +83,8 @@ export default function IndexPage() {
   useEffect(() => {
     console.log("取得した音声ファイル", audioFile)
     const fn = async () => {
+      setRecordingStatus("LOADING")
+
       try {
         if (audioFile) {
           // 送信データ
@@ -76,7 +92,7 @@ export default function IndexPage() {
           formData.append('file', audioFile)
           console.log(formData.entries)
 
-          // Whisper API
+          // Whisper APIにリクエストを投げて文字おこしをする
           const response = await fetch(`/api/whisper`, {
             method: 'POST',
             body: formData,
@@ -94,13 +110,23 @@ export default function IndexPage() {
       } catch (error) {
         console.log("Error", error)
         alert("🐔" + error)
-        setLoading(false)
+        // setLoading(false)
+      } finally {
+        setRecordingStatus("STOPPED")
       }
       setAudioFile(null)
     }
     fn()
   }, [audioFile])
 
+
+  const handleRecodringButton = async () => {
+    if (recordingStatus === "STOPPED") {
+      startRecording()
+    } else if (recordingStatus === "RECORDING") {
+      stopRecording()
+    }
+  }
   /**
    * 音声録音開始
    */
@@ -111,7 +137,8 @@ export default function IndexPage() {
     await recorder.current
       .start()
       .then(() => {
-        setRecording(true)
+        // setRecording(true)
+        setRecordingStatus("RECORDING")
       })
       .catch((error: string) => {
         console.error(error)
@@ -123,6 +150,7 @@ export default function IndexPage() {
    */
   const stopRecording = async () => {
     console.log("stopRecording")
+
     // ストップウォッチ停止
     // pause()
     // 録音停止
@@ -136,16 +164,16 @@ export default function IndexPage() {
           lastModified: Date.now(),
         })
         // 録音停止
-        setLoading(true)
+        // setRecordingStatus("STOPPED")
         setAudioFile(file)
       })
       .catch((error: string) => {
         console.log(error)
-        setLoading(false)
+        // setLoading(false)
+        setRecordingStatus("STOPPED")
       })
-
     // 録音停止
-    setRecording(false)
+    //setRecording(false)
   }
 
   /**
@@ -191,12 +219,13 @@ export default function IndexPage() {
       setAnswer("");
       // 問題更新
       // setQuestionNum(Math.floor(Math.random() * (questionList.length - 1)));
-      getNewQuestion({ level: 300, category: ["IT", "一般"] })
+      getNewQuestion({ level: level, category: category })
 
     } catch (error) {
       console.error(error);
     } finally {
-      setIsloading(false);
+      //setLoading(false);
+
     }
   };
 
@@ -216,10 +245,22 @@ export default function IndexPage() {
         <Grid item xs={12} sm={6}>
           <Container maxWidth="md">
             <Grid container spacing={2}>
+
+              <Grid item xs={3} sm={3}>
+                <StaticCard title="今日の回答数" contents="23/234位" />
+              </Grid>
+              <Grid item xs={3} sm={3}>
+                <StaticCard title="今月の回答数" contents="23/234位" />
+              </Grid>
+              <Grid item xs={3} sm={3}>
+                <StaticCard title="これまでの回答数" contents="23/234位" />
+              </Grid>
+
               <Grid item xs={12} sm={12}>
                 <Chip color="default" size="small" label="level1" />{" "}
                 <Chip color="default" size="small" label="missed > 10" />
               </Grid>
+
               <Grid item xs={12} sm={12}>
                 <Box sx={{
                   // display: 'flex',
@@ -230,14 +271,74 @@ export default function IndexPage() {
                   <Typography sx={{ fontSize: "20px" }}>
                     {
                       // FIXME: LoadingIconに変える
-                      isQuestionLoading ? <LinearProgress /> :
+                      isQuestionLoading ? <Skeleton variant="text" sx={{ fontSize: '1.3rem' }} /> :
                         getCurrentQuestion() ? getCurrentQuestion().contents : ""
                     }
                   </Typography>
                 </Box>
               </Grid>
               <Grid item xs={12} sm={12}>
-                <TextField
+                <Paper
+                  component="form"
+                  sx={{
+                    p: '2px 4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    border: "1px solid",
+                    borderColor: "grey.300",
+                    position: 'relative', // Make this a positioning context for absolute positioning
+                    //boxShadow: '0px 3px 10px 6px rgba(0, 0, 0, 0.2)',
+                  }}>
+                  <InputBase
+                    id="MessageInputBox"
+                    sx={{
+                      ml: 1,
+                      flex: 1,
+                      minHeight: '38px',
+
+                    }}
+                    value={answer}
+                    onChange={(e) => setAnswer(e.target.value)}
+                    className={shake ? 'shake-animation' : ''}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault(); // Enterキーでの自動送信を防ぐ
+                        handleAnswerClick(); // Enterキーが押されたときに呼び出す関数
+                      }
+                    }}
+                  // placeholder={placeholder}
+                  // value={messageInputBoxValue} // 追加 FIXME: 名前修正必要
+                  // onChange={onChange} // 追加  FIXME: 名前修正必要
+                  // onKeyDown={onKeyDown} // FIXME: 名前修正必要
+                  // onCompositionStart={onCompositionStart}
+                  // onCompositionEnd={onCompositionEnd}
+                  // multiline
+                  // maxRows={10}
+                  // inputRef={inputElement}
+
+                  />
+                  <Stack direction="row" justifyContent="space-around" alignItems="stretch" spacing={0.5} sx={{ position: 'absolute', bottom: 0, right: 2 }}>
+                    <Tooltip title={`音声で入力`} arrow>
+                      <IconButton
+                        id="messageSubmitButton"
+                        color="primary"
+                        sx={{ position: 'relative', bottom: 0 }}
+                        aria-label="messages"
+                        onClick={handleRecodringButton}
+                      >
+                        {recordingStatus === "STOPPED" ? (
+                          <MicIcon />
+                        ) :
+                          recordingStatus === "RECORDING" ? <StopCircleIcon />
+                            :
+                            recordingStatus === "LOADING" ? <CircularProgress size={20} /> : ""
+                        }
+                      </IconButton>
+                    </Tooltip>
+                  </Stack>
+                </Paper>
+
+                {/* <TextField
                   fullWidth
                   sx={{ maxWidth: "md" }}
                   id="outlined-basic"
@@ -255,13 +356,13 @@ export default function IndexPage() {
                       handleAnswerClick(); // Enterキーが押されたときに呼び出す関数
                     }
                   }}
-                />
+                /> */}
               </Grid>
               <Grid item xs={12} sm={12}>
                 <Button variant="contained" onClick={handleAnswerClick} >
-                  回答する
+                  回答＆次の質問へ
                 </Button>
-                {recording ?
+                {/* {recording ?
                   <Button
                     variant="outlined"
                     color="info"
@@ -277,8 +378,8 @@ export default function IndexPage() {
                     sx={{ minWidth: "150px" }}
                   >
                     音声で入力
-                  </Button>
-                }
+                  </Button> */}
+
               </Grid>
               <Grid item xs={12} sm={12}>
                 {/* {recording ?
@@ -301,8 +402,7 @@ export default function IndexPage() {
                 );
               })}
               <hr />
-      
-      
+
               <Link href="/day">Day</Link>
               <hr />
               <Link href="redux-sample">redux-sample</Link>

@@ -17,9 +17,6 @@ import {
 import "../css/shake.module.css";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-
-const MicRecorder = require('mic-recorder-to-mp3')
-
 import { Question, QuestionRequest } from "../types/Question.type";
 
 /**
@@ -38,7 +35,6 @@ export default function useQuestion() {
    */
   const getNewQuestion = async (params: QuestionRequest): Promise<Question> => {
     setIsQuestionLoading(true);
-    console.log("🈲", params)
     const result = await axios.get<Question>("/api/ai/question", { params: { level: params.level, category: JSON.stringify(params.category) } });
     setCurrentQuestion(result.data);
     setIsQuestionLoading(false);
