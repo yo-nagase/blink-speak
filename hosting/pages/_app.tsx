@@ -32,7 +32,7 @@ if (!getApps().length) {
     // Enable analytics. https://firebase.google.com/docs/analytics/get-started
     if ("measurementId" in firebaseConfig) getAnalytics();
   }
-
+  
 }
 
 export default function MyApp({ Component, pageProps }: AppProps) {

@@ -1,21 +1,12 @@
 // Importing necessary modules from Next.js and Material UI libraries
 
 import {
-
+    CircularProgress,
     Container,
     Grid,
-    Paper,
-    Stack,
-    TextField,
 } from "@mui/material";
-import axios from "axios";
-import { useRouter } from "next/router";
-import { nanoid } from "@reduxjs/toolkit";
 import { AnswerResult } from "../../types/AnswerResult.type";
 import DiffVewer from "../../components/DiffViewer";
-
-
-
 
 // Defining the IndexPage component as default export
 export default function ResultBox(props: AnswerResult) {
@@ -25,12 +16,11 @@ export default function ResultBox(props: AnswerResult) {
         fontSize: '16px',
     };
 
-
     // Returning the JSX elements to render on the page
     return (
         <>
-            {props.is_loading ? <Container sx={{minHeight:"200px"}}>
-                <h1>loading...</h1>
+            {props.is_loading ? <Container sx={{ minHeight: "200px" }}>
+                <CircularProgress color="secondary" />
             </Container>
                 : <Grid container spacing={1}  >
                     <Grid item xs={1} lg={1} sx={{}}>
@@ -69,9 +59,17 @@ export default function ResultBox(props: AnswerResult) {
                         正答例
                     </Grid>
                     <Grid item xs={12} sm={10}>
-                        {props.proposal_answer}
                         {(props.user_answer) ?
-                            <DiffVewer from={props.user_answer} to={props.proposal_answer} />
+                            <DiffVewer from={props.user_answer} to={props.proposal_answer} isSkipRemovedText={true} />
+                            : <></>
+                        }
+                    </Grid>
+                    <Grid item xs={12} sm={2} >
+                        Diff
+                    </Grid>
+                    <Grid item xs={12} sm={10}>
+                        {(props.user_answer) ?
+                            <DiffVewer from={props.user_answer} to={props.proposal_answer} isSkipRemovedText={false} />
                             : <></>
                         }
                     </Grid>
